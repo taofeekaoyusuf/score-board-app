@@ -9,11 +9,11 @@ pipeline {
     }
     
     stages {
-        stage('Code Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        // stage('Code Checkout') {
+        //     steps {
+        //         checkout scm
+        //     }
+        // }
         
         stage('SonarQube Code Analysis') {
             steps {
