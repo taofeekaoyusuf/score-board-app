@@ -14,18 +14,35 @@ pipeline {
         //         checkout scm
         //     }
         // }
-        
+
         stage('SonarQube Code Analysis') {
             steps {
-                // Requires SonarQube Scanner plugin configured in Jenkins
-                withSonarQubeEnv('SonarQube-Server') {
-                    sh 'sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/'
+                script {
+                    // This grabs the automated scanner executable we named in Jenkins Tools config
+                    def scannerHome = tool 'SonarQube-Scanner'
+                    
+                    // Execute the scanner using its absolute extracted path
+                    withSonarQubeEnv('SonarQube-Server') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/"
+                    }
                 }
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
         }
+        
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         // Requires SonarQube Scanner plugin configured in Jenkins
+        //         withSonarQubeEnv('SonarQube-Server') {
+        //             sh 'sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/'
+        //         }
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         
         stage('Build & Push Docker Image') {
             steps {
