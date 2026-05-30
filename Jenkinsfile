@@ -35,13 +35,13 @@ pipeline {
         }
         
         stage('Build & Push Docker Image') {
-            // 1. Inject the paths at the stage level BEFORE any steps execute
+            // This ensure 'docker' is available for the Docker plugin by explicitly including common installation paths
             environment {
                 PATH = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}"
             }
             steps {
                 script {
-                    // 2. The Docker plugin can now safely locate 'docker' to perform login
+                    // Docker plugin locating 'docker' to perform login
                     docker.withRegistry('', 'docker-hub-creds') {
                         def customImage = docker.build("IMAGE_NAME:${BUILD_NUMBER}")
                         customImage.push()
