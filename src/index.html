@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../CSS/scoreboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BasketBall Score Board</title>
+</head>
+<body>
+    <div class="container">
+        <div class="score" id="home">
+            <h3 id="hom">HOME</h3>
+            <div class="scoreboard" id="homescoreboard"></div>
+            <div id="addtoboard">
+                <div class="plus" id="plusoneH" onclick="addOneH()">+</div>
+                <div class="plus" id="plustwoH" onclick="addTwoH()">+</div>
+                <div class="plus" id="plusthreeH" onclick="addThreeH()">+</div>
+            </div>
+        </div>
+        <div id="resetscoreboard" onclick="resetScoreBoard()">RESET SCORE BOARD</div>
+        <div class="score" id="guest">
+            <h3 id="gue">GUEST</h3>
+            <div class="scoreboard" id="guestscoreboard"></div>
+            <div id="addtoboard">
+                <div class="plus" id="plusoneG" onclick="addOneG()">+</div>
+                <div class="plus" id="plustwoG" onclick="addTwoG()">+</div>
+                <div class="plus" id="plusthreeG" onclick="addThreeG()">+</div>
+            </div>
+        </div>
+    </div>
+    <script src="../JAVASCRIPT/scoreboard.js"></script>
+</body>
+</html>

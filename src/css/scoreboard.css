@@ -1,0 +1,109 @@
+@font-face {
+    src: url(../FONTS/CursedTimer.ttf);
+    font-family: 'CursedTimer';
+}
+
+body {
+    margin-top: 150px;
+    display: flex;
+    justify-content: space-around;
+    background: #457b9d;
+    font-size: 50px;
+}
+
+.container {
+    width: 800px;
+    height: 500px;
+    color: white;
+    background: #032048;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: start;
+
+    border: 5px solid white;
+    border-radius: 15px;
+}
+
+.score {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.scoreboard {
+    width: 250px;
+    height: 215px;
+    margin-top: -50px;
+    color: rgb(178, 34, 34);
+    background: black;
+    font-family: 'CursedTimer';
+    font-size: 150px;
+    font-weight: bold;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#hom{
+    margin-left: 35px;
+}
+
+/*#home {
+    margin-right: 25px;
+}*/
+
+#gue{
+    margin-left: 25px;
+}
+
+/*#guest {
+    margin-left: 25px;
+} */
+
+#addtoboard {
+    display: flex;
+    margin-top: 25px;
+    justify-content: space-around;
+}
+
+.plus {
+    width: 70px;
+    height: 70px;
+    color: white;
+    background: #032048;
+    border: 1px solid white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "CursedTimer";
+    font-size: 30px;
+}
+
+#resetscoreboard {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    background: #89459d ;
+    border: 2px solid #42055a;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+/* #plusone {
+    width: 80px;
+    height: 80px;
+}
+
+#plustwo {
+    width: 80px;
+    height: 80px;
+}
+
+#plusthree {
+    width: 80px;
+    height: 80px;
+} */

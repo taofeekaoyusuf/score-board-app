@@ -1,0 +1,10 @@
+# Jenkins workspace temporary files
+workspace/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variable files
+.env
