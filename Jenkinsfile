@@ -77,26 +77,25 @@ pipeline {
             steps {
                 script {
                     // Cloning the infrastructure repository cleanly
-                    sh 'rm -rf score-board-app'
                     withCredentials([usernamePassword(credentialsId: 'GITHUB_TOKEN_FOR_JENKINS', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        sh 'rm -rf score-board-app'
                         sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO}"
                     }
                     
-                    dir('score-board-gitops') {
+                    dir('score-board-app') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
                         echo "UPDATING GITOPS MANIFESTS..."
-                        sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
-                        // sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:jenkins-score-board-app-gitops-pipeline-${env.BUILD_NUMBER}|g' argocd/deployment.yaml"
+                        // sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
+                        sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:jenkins-score-board-app-gitops-pipeline-${env.BUILD_NUMBER}|g' argocd/deployment.yaml"
                         
                         // Pushing changes back to GitHub
                         sh 'git config --global user.email "jenkins@devops.com"'
                         sh 'git config --global user.name "Jenkins CI"'
-                        sh "git add argocd/deployment.yaml"
-                        sh "git commit -m 'Automated Image Update: Tag ${IMAGE_TAG} [skip ci]'"
                         
-                        withCredentials([usernamePassword(credentialsId: 'GITHUB_TOKEN_FOR_JENKINS', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO} HEAD:main"
-                        }
+                        sh "git add argocd/deployment.yaml"
+                        sh "git commit -m 'Automated Image Update: Tag ${env.BUILD_NUMBER} [skip ci]'"
+
+                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO} HEAD:main"
                     }
                 }
             }
