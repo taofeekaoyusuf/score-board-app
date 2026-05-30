@@ -20,6 +20,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQube-Scanner'
                     
+                    // This injects the authentication tokens defined in Jenkins System settings
                     withSonarQubeEnv('SonarQube-Server') {
                         sh """
                         ${scannerHome}/bin/sonar-scanner \
@@ -30,11 +31,33 @@ pipeline {
                         """
                     }
                 }
+                // Timeout to prevent Jenkins from hanging indefinitely if the cloud queue is busy
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
         }
+
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         script {
+        //             def scannerHome = tool 'SonarQube-Scanner'
+                    
+        //             withSonarQubeEnv('SonarQube-Server') {
+        //                 sh """
+        //                 ${scannerHome}/bin/sonar-scanner \
+        //                 -Dsonar.projectKey=taofeekaoyusuf_score-board-app \
+        //                 -Dsonar.organization=taofeekaoyusuf \
+        //                 -Dsonar.sources=src/ \
+        //                 -Dsonar.host.url=https://sonarcloud.io
+        //                 """
+        //             }
+        //         }
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
 
         // stage('SonarQube Code Analysis') {
         //     steps {
