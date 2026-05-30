@@ -6,7 +6,6 @@ pipeline {
         IMAGE_NAME      = "score-board-app"
         IMAGE_TAG       = "${env.BUILD_TAG}"
         GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-gitops.git"
-        // PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
     }
     
     stages {
@@ -38,7 +37,7 @@ pipeline {
                 // Bypassing the plugin and using explicit path environments with raw shell execution
                 withEnv(['PATH+DOCKER=/usr/local/bin:/opt/homebrew/bin']) {
                     script {
-                        // Use Jenkins credentials binding to mask your password safely
+                        // Using Jenkins credentials binding to mask password safely
                         withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                             
                             // Manual authentication of injected path environment
@@ -52,39 +51,24 @@ pipeline {
                             // Pushing the image tags to Docker Hub
                             echo "PUSHING DOCKER IMAGE WITH THE LATEST TAG..."
                             sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
-                            // sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_USER}/${IMAGE_NAME}:latest"
-                            // sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                         }
                     }
                 }
             }
         }
-        
-        // stage('Build & Push Docker Image') {
-        //     steps {
-        //         script {
-        //             // Docker plugin locating 'docker' to perform login
-        //             docker.withRegistry('', 'docker-hub-creds') {
-        //                 def customImage = docker.build("IMAGE_NAME:${BUILD_NUMBER}")
-        //                 customImage.push()
-        //                 customImage.push('latest')
-        //             }
-        //         }
-        //     }
-        // }
-        
+
         stage('Update GitOps Manifests') {
             steps {
                 script {
                     // Cloning the infrastructure repository cleanly
-                    withCredentials([usernamePassword(credentialsId: 'GITHUB_TOKEN_FOR_JENKINS', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB_TOKEN', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh 'rm -rf score-board-app'
                         sh 'rm -rf score-board-gitops'
                         sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO}"
                     }
                     
                     dir('score-board-gitops') {
-                        // Using sed to update the image tag dynamically inside deployment.yaml
+                        // Using sed operation to update the image tag dynamically inside deployment.yaml
                         echo "UPDATING GITOPS MANIFESTS..."
                         // sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:jenkins-score-board-app-gitops-pipeline-${env.BUILD_NUMBER}|g' argocd/deployment.yaml"
