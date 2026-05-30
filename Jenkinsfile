@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_HUB_USER = "${DOCKER_HUB_USERNAME}"
         IMAGE_NAME      = "${DOCKER_HUB_USER}/score-board-app"
-        IMAGE_TAG       = "${.env.BUILD_NUMBER}"
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
         GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
     }
     
