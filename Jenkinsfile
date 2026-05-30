@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_HUB_USER = "${DOCKER_HUB_USERNAME}"
-        IMAGE_NAME      = "${DOCKER_HUB_USER}/score-board-app"
+        DOCKER_USER = "${DOCKER_USER}"
+        IMAGE_NAME      = "${DOCKER_USER}/score-board-app"
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
         GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
         PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
@@ -16,7 +16,6 @@ pipeline {
                     def scannerHome = tool 'SonarQube-Scanner'
                     
                     withSonarQubeEnv('SonarQube-Server') {
-                        // Safe path inclusion that keeps basic system tools active
                         withEnv(['PATH+SONAR=/usr/local/bin:/opt/homebrew/bin']) {
                             sh """
                             ${scannerHome}/bin/sonar-scanner \
@@ -33,19 +32,43 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Build & Push Docker Image') {
             steps {
-                script {
-                    // Docker plugin locating 'docker' to perform login
-                    docker.withRegistry('', 'docker-hub-creds') {
-                        def customImage = docker.build("IMAGE_NAME:${BUILD_NUMBER}")
-                        customImage.push()
-                        customImage.push('latest')
+                // Bypassing the plugin and using explicit path environments with raw shell execution
+                withEnv(['PATH+DOCKER=/usr/local/bin:/opt/homebrew/bin']) {
+                    script {
+                        // Use Jenkins credentials binding to mask your password safely
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                            
+                            // Manual authentication of injected path environment
+                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            
+                            // Building the container image
+                            sh "docker build -t dhackbility/IMAGE_NAME:${env.BUILD_NUMBER} ."
+                            
+                            // Pushing the image tags to Docker Hub
+                            sh "docker push dhackbility/IMAGE_NAME:${env.BUILD_NUMBER}"
+                            sh "docker tag dhackbility/IMAGE_NAME:${env.BUILD_NUMBER} dhackbility/IMAGE_NAME:latest"
+                            sh "docker push dhackbility/IMAGE_NAME:latest"
+                        }
                     }
                 }
             }
         }
+        
+        // stage('Build & Push Docker Image') {
+        //     steps {
+        //         script {
+        //             // Docker plugin locating 'docker' to perform login
+        //             docker.withRegistry('', 'docker-hub-creds') {
+        //                 def customImage = docker.build("IMAGE_NAME:${BUILD_NUMBER}")
+        //                 customImage.push()
+        //                 customImage.push('latest')
+        //             }
+        //         }
+        //     }
+        // }
         
         stage('Update GitOps Manifests') {
             steps {
@@ -58,7 +81,7 @@ pipeline {
                     
                     dir('score-board-app') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
-                        sh "sed -i 's|image: .*|image: ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
+                        sh "sed -i 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         
                         // Pushing changes back to GitHub
                         sh 'git config user.email "jenkins@devops.com"'
