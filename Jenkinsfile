@@ -88,8 +88,8 @@ pipeline {
                         sh "sed -i 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         
                         // Pushing changes back to GitHub
-                        sh 'git config user.email "jenkins@devops.com"'
-                        sh 'git config user.name "Jenkins CI"'
+                        sh 'git config --global user.email "jenkins@devops.com"'
+                        sh 'git config --global user.name "Jenkins CI"'
                         sh "git add argocd/deployment.yaml"
                         sh "git commit -m 'Automated Image Update: Tag ${IMAGE_TAG} [skip ci]'"
                         
