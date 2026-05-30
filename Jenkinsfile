@@ -101,7 +101,7 @@ pipeline {
                             git credential approve <<EOF
                                 protocol=https
                                 host=github.com
-                                username=${GIT_USER}
+                                username=${GIT_USERNAME}
                                 password=${GIT_PASSWORD}
                                 EOF
                             
