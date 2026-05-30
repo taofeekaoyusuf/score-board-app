@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         DOCKER_USER = "${DOCKER_USER}"
-        IMAGE_NAME      = "${DOCKER_USER}/score-board-app"
+        IMAGE_NAME      = "score-board-app"
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
         GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
         // PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
