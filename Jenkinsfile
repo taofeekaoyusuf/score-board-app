@@ -5,7 +5,7 @@ pipeline {
         DOCKER_USER = "${DOCKER_USER}"
         IMAGE_NAME      = "score-board-app"
         IMAGE_TAG       = "${env.BUILD_TAG}"
-        GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
+        GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-gitops.git"
         // PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
     }
     
@@ -82,7 +82,7 @@ pipeline {
                         sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO}"
                     }
                     
-                    dir('score-board-app') {
+                    dir('score-board-gitops') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
                         echo "UPDATING GITOPS MANIFESTS..."
                         // sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
@@ -91,7 +91,7 @@ pipeline {
                         // Pushing changes back to GitHub
                         sh 'git config --global user.email "jenkins@devops.com"'
                         sh 'git config --global user.name "Jenkins CI"'
-                        
+
                         sh "git add argocd/deployment.yaml"
                         sh "git commit -m 'Automated Image Update: Tag ${env.BUILD_NUMBER} [skip ci]'"
 
