@@ -96,18 +96,12 @@ pipeline {
                         sh "git add argocd/deployment.yaml"
                         sh "git commit -m 'Automated Image Update: Tag ${env.BUILD_NUMBER} [skip ci]'"
 
-                        sh """
-                            git config credential.helper 'cache --timeout=300'
-                            git credential approve <<EOF
-                                protocol=https
-                                host=github.com
-                                username=${GIT_USERNAME}
-                                password=${GIT_PASSWORD}
-                                EOF
-                            
-                            # Securely push directly back using the clean origin target
-                            git push origin main
-                        """
+                    sh """
+                        git config credential.helper 'cache --timeout=300'
+                        printf "protocol=https\nhost=github.com\nusername=${GIT_USERNAME}\npassword=${GIT_PASSWORD}\n\n" | git credential approve
+                        
+                        git push origin main
+                    """
                     }
                 }
             }
