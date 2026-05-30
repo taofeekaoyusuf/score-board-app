@@ -6,10 +6,10 @@ pipeline {
         IMAGE_NAME      = "${DOCKER_HUB_USER}/score-board-app"
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
         GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
+        PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
     }
     
     stages {
-
         stage('SonarQube Code Analysis') {
             steps {
                 script {
@@ -35,10 +35,6 @@ pipeline {
         }
         
         stage('Build & Push Docker Image') {
-            // This ensure 'docker' is available for the Docker plugin by explicitly including common installation paths
-            environment {
-                PATH = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}"
-            }
             steps {
                 script {
                     // Docker plugin locating 'docker' to perform login
