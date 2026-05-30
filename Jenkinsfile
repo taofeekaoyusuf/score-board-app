@@ -82,10 +82,10 @@ pipeline {
                         sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO}"
                     }
                     
-                    dir('score-board-app') {
+                    dir('score-board-gitops') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
                         echo "UPDATING GITOPS MANIFESTS..."
-                        sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' score-board-gitops/argocd/deployment.yaml"
+                        sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         // sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:jenkins-score-board-app-gitops-pipeline-${env.BUILD_NUMBER}|g' argocd/deployment.yaml"
                         
                         // Pushing changes back to GitHub
