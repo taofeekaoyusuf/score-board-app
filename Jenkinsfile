@@ -109,11 +109,13 @@ pipeline {
         
         stage('Build & Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry('', 'docker-hub-creds') {
-                        def customImage = docker.build("${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}")
-                        customImage.push()
-                        customImage.push('latest')
+                withEnv(['PATH+EXTRA=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin']) {
+                    script {
+                        docker.withRegistry('', 'docker-hub-creds') {
+                            def customImage = docker.build("${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}")
+                            customImage.push()
+                            customImage.push('latest')
+                        }
                     }
                 }
             }
