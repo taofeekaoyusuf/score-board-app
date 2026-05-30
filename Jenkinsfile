@@ -20,18 +20,19 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQube-Scanner'
                     
-                    // This injects the authentication tokens defined in Jenkins System settings
                     withSonarQubeEnv('SonarQube-Server') {
-                        sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=taofeekaoyusuf_score-board-app \
-                        -Dsonar.organization=taofeekaoyusuf \
-                        -Dsonar.sources=src/ \
-                        -Dsonar.host.url=https://sonarcloud.io
-                        """
+                        // Safe path inclusion that keeps basic system tools active
+                        withEnv(['PATH+SONAR=/usr/local/bin:/opt/homebrew/bin']) {
+                            sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=taofeekaoyusuf_score-board-app \
+                            -Dsonar.organization=taofeekaoyusuf \
+                            -Dsonar.sources=src/ \
+                            -Dsonar.host.url=https://sonarcloud.io
+                            """
+                        }
                     }
                 }
-                // Timeout to prevent Jenkins from hanging indefinitely if the cloud queue is busy
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
@@ -109,10 +110,12 @@ pipeline {
         
         stage('Build & Push Docker Image') {
             steps {
-                withEnv(['PATH+EXTRA=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin']) {
+                // Safe path inclusion that adds docker paths onto existing system profiles
+                withEnv(['PATH+DOCKER=/usr/local/bin:/opt/homebrew/bin']) {
                     script {
+                        // Double check that 'docker-hub-creds' matches your exact Jenkins Credential ID
                         docker.withRegistry('', 'docker-hub-creds') {
-                            def customImage = docker.build("${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}")
+                            def customImage = docker.build("dhackbility/k8s-gitops-demo:${BUILD_NUMBER}")
                             customImage.push()
                             customImage.push('latest')
                         }
