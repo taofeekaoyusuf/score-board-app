@@ -17,6 +17,14 @@ This repository showcases a complete modern GitOps software delivery pipeline de
 5. Jenkins dynamically edits the Kubernetes manifest repository (`gitops-repo`), tracking the precise application version tag.
 6. **Argo CD** identifies a delta between the live cluster state and git desired state, initiating an automated rolling sync into the Kubernetes Cluster.
 
+## Tech Stack Used
+
+* **Automation Server**: Jenkins CI
+* **Code Analytics Quality Gate**: SonarQube
+* **Containerization Engine**: Docker
+* **Declarative GitOps Engine**: Argo CD
+* **Target Runtime Platform**: Kubernetes
+
 ## Prerequisites & Dependencies
 
 To execute this architecture locally or on a cloud platform, verify the installation of:
