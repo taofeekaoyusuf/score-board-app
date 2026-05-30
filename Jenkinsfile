@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME      = "${DOCKER_USER}/score-board-app"
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
         GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
-        PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
+        // PATH            = "/usr/local/bin:/opt/homebrew/bin:${env.PATH}" // Ensuring 'docker' is available in the PATH for the Docker plugin
     }
     
     stages {
@@ -42,15 +42,18 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                             
                             // Manual authentication of injected path environment
+                            echo "LOGGING IN TO DOCKERHUB..."
                             sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
                             
                             // Building the container image
-                            sh "docker build -t dhackbility/IMAGE_NAME:${env.BUILD_NUMBER} ."
+                            echo "BUILDING DOCKER IMAGE..."
+                            sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER} ."
                             
                             // Pushing the image tags to Docker Hub
-                            sh "docker push dhackbility/IMAGE_NAME:${env.BUILD_NUMBER}"
-                            sh "docker tag dhackbility/IMAGE_NAME:${env.BUILD_NUMBER} dhackbility/IMAGE_NAME:latest"
-                            sh "docker push dhackbility/IMAGE_NAME:latest"
+                            echo "PUSHING DOCKER IMAGE WITH THE LATEST TAG..."
+                            sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                            sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER} ${DOCKER_USER}/${IMAGE_NAME}:latest"
+                            sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
                         }
                     }
                 }
@@ -81,6 +84,7 @@ pipeline {
                     
                     dir('score-board-app') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
+                        echo "UPDATING GITOPS MANIFESTS..."
                         sh "sed -i 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         
                         // Pushing changes back to GitHub
