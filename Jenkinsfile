@@ -2,10 +2,10 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_HUB_USER = "${DOCKER_HUB_USER}"
-        IMAGE_NAME      = "${DOCKER_HUB_USER}/scoreBoard-app"
+        DOCKER_HUB_USER = "${DOCKER_HUB_USERNAME}"
+        IMAGE_NAME      = "${DOCKER_HUB_USER}/score-board-app"
         IMAGE_TAG       = "${.env.BUILD_NUMBER}"
-        GITOPS_REPO     = "${MY_GITHUB_LINK}/scoreBoard.git"
+        GITOPS_REPO     = "${MY_GITHUB_LINK}/score-board-app.git"
     }
     
     stages {
@@ -19,7 +19,7 @@ pipeline {
             steps {
                 // Requires SonarQube Scanner plugin configured in Jenkins
                 withSonarQubeEnv('SonarQube-Server') {
-                    sh 'sonar-scanner -Dsonar.projectKey=scoreBoard-app -Dsonar.sources=src/'
+                    sh 'sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/'
                 }
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -43,12 +43,12 @@ pipeline {
             steps {
                 script {
                     // Cloning the infrastructure repository cleanly
-                    sh 'rm -rf scoreBoard'
+                    sh 'rm -rf score-board-app'
                     withCredentials([usernamePassword(credentialsId: 'GITHUB_TOKEN_FOR_JENKINS', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO}"
                     }
                     
-                    dir('scoreBoard') {
+                    dir('score-board-app') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
                         sh "sed -i 's|image: .*|image: ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         
