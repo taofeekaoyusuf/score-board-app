@@ -85,7 +85,7 @@ pipeline {
                     dir('score-board-app') {
                         // Using sed to update the image tag dynamically inside deployment.yaml
                         echo "UPDATING GITOPS MANIFESTS..."
-                        sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd\deployment.yaml"
+                        sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         // sh "sed -i '' 's|image: .*|image: ${DOCKER_USER}/${IMAGE_NAME}:jenkins-score-board-app-gitops-pipeline-${env.BUILD_NUMBER}|g' argocd/deployment.yaml"
                         
                         // Pushing changes back to GitHub
