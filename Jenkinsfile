@@ -79,6 +79,7 @@ pipeline {
                     // Cloning the infrastructure repository cleanly
                     withCredentials([usernamePassword(credentialsId: 'GITHUB_TOKEN_FOR_JENKINS', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh 'rm -rf score-board-app'
+                        sh 'rm -rf score-board-gitops'
                         sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@${GITOPS_REPO}"
                     }
                     
