@@ -18,12 +18,16 @@ pipeline {
         stage('SonarQube Code Analysis') {
             steps {
                 script {
-                    // This grabs the automated scanner executable we named in Jenkins Tools config
                     def scannerHome = tool 'SonarQube-Scanner'
                     
-                    // Execute the scanner using its absolute extracted path
                     withSonarQubeEnv('SonarQube-Server') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/"
+                        sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=taofeekaoyusuf_score-board-app \
+                        -Dsonar.organization=taofeekaoyusuf \
+                        -Dsonar.sources=src/ \
+                        -Dsonar.host.url=https://sonarcloud.io
+                        """
                     }
                 }
                 timeout(time: 10, unit: 'MINUTES') {
@@ -31,6 +35,42 @@ pipeline {
                 }
             }
         }
+
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         script {
+        //             // 1. Grab the automated scanner executable tool
+        //             def scannerHome = tool 'SonarQube-Scanner'
+                    
+        //             // 2. ONLY wrap the execution step inside the Environment block
+        //             withSonarQubeEnv('SonarQube-Server') {
+        //                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/"
+        //             }
+        //         }
+                
+        //         // 3. Keep the Quality Gate wait completely OUTSIDE of the environment block wrapper
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
+
+        // stage('SonarQube Code Analysis') {
+        //     steps {
+        //         script {
+        //             // This grabs the automated scanner executable we named in Jenkins Tools config
+        //             def scannerHome = tool 'SonarQube-Scanner'
+                    
+        //             // Execute the scanner using its absolute extracted path
+        //             withSonarQubeEnv('SonarQube-Server') {
+        //                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/"
+        //             }
+        //         }
+        //         timeout(time: 10, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
         
         // stage('SonarQube Code Analysis') {
         //     steps {
