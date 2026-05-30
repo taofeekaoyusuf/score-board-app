@@ -9,11 +9,6 @@ pipeline {
     }
     
     stages {
-        // stage('Code Checkout') {
-        //     steps {
-        //         checkout scm
-        //     }
-        // }
 
         stage('SonarQube Code Analysis') {
             steps {
@@ -38,84 +33,14 @@ pipeline {
                 }
             }
         }
-
-        // stage('SonarQube Code Analysis') {
-        //     steps {
-        //         script {
-        //             def scannerHome = tool 'SonarQube-Scanner'
-                    
-        //             withSonarQubeEnv('SonarQube-Server') {
-        //                 sh """
-        //                 ${scannerHome}/bin/sonar-scanner \
-        //                 -Dsonar.projectKey=taofeekaoyusuf_score-board-app \
-        //                 -Dsonar.organization=taofeekaoyusuf \
-        //                 -Dsonar.sources=src/ \
-        //                 -Dsonar.host.url=https://sonarcloud.io
-        //                 """
-        //             }
-        //         }
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
-
-        // stage('SonarQube Code Analysis') {
-        //     steps {
-        //         script {
-        //             // 1. Grab the automated scanner executable tool
-        //             def scannerHome = tool 'SonarQube-Scanner'
-                    
-        //             // 2. ONLY wrap the execution step inside the Environment block
-        //             withSonarQubeEnv('SonarQube-Server') {
-        //                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/"
-        //             }
-        //         }
-                
-        //         // 3. Keep the Quality Gate wait completely OUTSIDE of the environment block wrapper
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
-
-        // stage('SonarQube Code Analysis') {
-        //     steps {
-        //         script {
-        //             // This grabs the automated scanner executable we named in Jenkins Tools config
-        //             def scannerHome = tool 'SonarQube-Scanner'
-                    
-        //             // Execute the scanner using its absolute extracted path
-        //             withSonarQubeEnv('SonarQube-Server') {
-        //                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/"
-        //             }
-        //         }
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
-        
-        // stage('SonarQube Code Analysis') {
-        //     steps {
-        //         // Requires SonarQube Scanner plugin configured in Jenkins
-        //         withSonarQubeEnv('SonarQube-Server') {
-        //             sh 'sonar-scanner -Dsonar.projectKey=score-board-app -Dsonar.sources=src/'
-        //         }
-        //         timeout(time: 10, unit: 'MINUTES') {
-        //             waitForQualityGate abortPipeline: true
-        //         }
-        //     }
-        // }
         
         stage('Build & Push Docker Image') {
             steps {
                 // Safe path inclusion that adds docker paths onto existing system profiles
                 withEnv(['PATH+DOCKER=/usr/local/bin:/opt/homebrew/bin']) {
                     script {
-                        // Double check that 'docker-hub-creds' matches your exact Jenkins Credential ID
                         docker.withRegistry('', 'docker-hub-creds') {
-                            def customImage = docker.build("dhackbility/k8s-gitops-demo:${BUILD_NUMBER}")
+                            def customImage = docker.build("IMAGE_NAME:${BUILD_NUMBER}")
                             customImage.push()
                             customImage.push('latest')
                         }
@@ -137,7 +62,7 @@ pipeline {
                         // Using sed to update the image tag dynamically inside deployment.yaml
                         sh "sed -i 's|image: .*|image: ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}|g' argocd/deployment.yaml"
                         
-                        // Push changes back to GitHub
+                        // Pushing changes back to GitHub
                         sh 'git config user.email "jenkins@devops.com"'
                         sh 'git config user.name "Jenkins CI"'
                         sh "git add argocd/deployment.yaml"
