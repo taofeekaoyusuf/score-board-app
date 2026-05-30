@@ -47,12 +47,12 @@ pipeline {
                             
                             // Building the container image
                             echo "BUILDING DOCKER IMAGE..."
-                            sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                            sh "docker build -t ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
                             
                             // Pushing the image tags to Docker Hub
                             echo "PUSHING DOCKER IMAGE WITH THE LATEST TAG..."
-                            sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                            sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:${env.BUILD_NUMBER} ${DOCKER_USER}/${IMAGE_NAME}:latest"
+                            sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+                            sh "docker tag ${DOCKER_USER}/${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_USER}/${IMAGE_NAME}:latest"
                             sh "docker push ${DOCKER_USER}/${IMAGE_NAME}:latest"
                         }
                     }
