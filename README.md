@@ -10,12 +10,12 @@ This repository showcases a complete modern GitOps software delivery pipeline de
 
 ## Architecture Flow
 
-1. Developer pushes code to the Application Repository (`score-board-app`).
+1. **Application Codes** along with **Dockerfile** and **Jenkinsfile** are pushes to the Application Repository (`score-board-app`).
 2. **Jenkins** detects changes via Webhooks and fires up the multi-stage pipeline.
-3. Code quality and security vulnerability checks are performed via **SonarQube Quality Gates**.
+3. Code quality and security vulnerability checks are performed via **SonarQube Quality Gates on SonarCloud**.
 4. Upon validation success, a **Docker image** is compiled and securely pushed to Docker Hub.
-5. Jenkins dynamically edits the Kubernetes manifest repository (`gitops-repo`), tracking the precise application version tag.
-6. **Argo CD** identifies a delta between the live cluster state and git desired state, initiating an automated rolling sync into the Kubernetes Cluster.
+5. Jenkins dynamically edits the **Kubernetes** manifest repository (`gitops-repo`), tracking the precise application version tag.
+6. **ArgoCD** identifies a delta between the live cluster state and git desired state, initiating an automated rolling sync into the Kubernetes Cluster.
 
 ## Tech Stack Used
 
