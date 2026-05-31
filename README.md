@@ -1,4 +1,4 @@
-# Enterprise GitOps CI/CD Pipeline with Jenkins & Argo CD
+# Enterprise GitOps CI/CD Pipeline with SonarCloud, Jenkins & Argo CD
 
 This repository showcases a complete modern GitOps software delivery pipeline deploying a Score Board Application. Source code changes trigger an automated build and security checking workflow, culminating in automated, zero-touch Kubernetes deployments via declarative desired-state configuration syncing.
 
