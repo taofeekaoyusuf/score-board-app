@@ -36,9 +36,8 @@ To execute this architecture locally or on a cloud platform, verify the installa
   * Docker Pipeline
   * Credentials Binding
 * **Argo CD** installed on your cluster:
-  ```bash
-  kubectl create namespace argocd
-  kubectl apply -n argocd -f [https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml](https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml)
+  - kubectl create namespace argocd
+  - kubectl apply -n argocd -f [https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml](https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml)
 
 The complimentary GitOps Repository can found [here](https://github.com/taofeekaoyusuf/score-board-gitops)
 
