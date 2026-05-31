@@ -40,6 +40,10 @@ To execute this architecture locally or on a cloud platform, verify the installa
   kubectl create namespace argocd
   kubectl apply -n argocd -f [https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml](https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml)
 
+The complimentary GitOps Repository can found [here](https://github.com/taofeekaoyusuf/score-board-gitops)
+
+To access and play with the App, go to '127.0.0.1:80' or 'http://localhost:80'
+
 This application can be forked and modified as pleased for more robustness.
 
 @Copyright: TAOY
