@@ -47,7 +47,7 @@ To execute this architecture locally or on a cloud platform, verify the installa
   - ArgoCD login Interface:
   ![argocd_login_interface](image.png)
   - After login into ArgoCD, you will be met with the deployed Application, thus:
-  ![argocd-deployed-application-page](image-1.png)
+  ![argocd-deployed-application-page](image-2.png)
 
 The complimentary GitOps Repository can found [here](https://github.com/taofeekaoyusuf/score-board-gitops)
 
