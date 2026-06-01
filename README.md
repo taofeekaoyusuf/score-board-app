@@ -38,10 +38,20 @@ To execute this architecture locally or on a cloud platform, verify the installa
 * **Argo CD** installed on your cluster:
   - kubectl create namespace argocd
   - kubectl apply -n argocd -f [https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml](https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml)
+  - To port-forward ArgoCD Server for access, do:
+  `kubectl port-forward svc/argocd-server -n argocd 8089:443 &`
+  - You can then acceess it at: `https://localhost:8089`
+  - To login to the ArgoCD UI:
+      Username: admin
+      Password: Run this command to get the Password: `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo`
+  - ArgoCD login Interface:
+  ![argocd_login_interface](image.png)
+  - After login into ArgoCD, you will be met with the deployed Application, thus:
+  ![argocd-deployed-application-page](image-1.png)
 
 The complimentary GitOps Repository can found [here](https://github.com/taofeekaoyusuf/score-board-gitops)
 
-To access and play with the App, go to '127.0.0.1:80' or 'http://localhost:80'
+To access and play with the App, go to `127.0.0.1:80` or `http://localhost:80`
 
 This application can be forked and modified as pleased for more robustness.
 
